@@ -13,7 +13,4 @@ print("Hello there, " + name + ".")
 location = getLocation()
 
 users = {"name":name, "location":location}
-
 print(users)
-print(len(users))
-print("What is happening at " + location + "?")

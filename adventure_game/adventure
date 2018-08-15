@@ -2,7 +2,6 @@
 
 """
 Text Adventure Demo by Al Sweigart (al@inventwithpython.com)
-Modified by Christian Sacks (christian@sacks.org.uk)
 
 This program is a small text-adventure game that demonstrates the cmd
 and textwrap Python modules. You can find other tutorials like this at
@@ -1174,7 +1173,10 @@ class TextAdventureCmd(cmd.Cmd):
             if who in worldRooms[location][NPC]:
                 if NPCs[who]['Health'] > 0:
                     dam = random.randint(0, worldItems[bestWeapon][DAMAGE] - random.randint(0, NPCs[who]['HP']))
-                    pdam = random.randint(0, (worldItems[npcBestWeapon][DAMAGE]) - random.randint(0, playerStats['HP']))
+                    if godMode == False:
+                        pdam = random.randint(0, (worldItems[npcBestWeapon][DAMAGE]) - random.randint(0, playerStats['HP']))
+                    else:
+                        pdam = 0
                     if dam > NPCs[who]['Health']:
                         dam = NPCs[who]['Health']
                         playerStats['XP'] += NPCs[who]['XP']

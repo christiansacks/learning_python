@@ -2,6 +2,7 @@
 
 """
 Text Adventure Demo by Al Sweigart (al@inventwithpython.com)
+Modified by Christian Sacks (christian@sacks.org.uk)
 
 This program is a small text-adventure game that demonstrates the cmd
 and textwrap Python modules. You can find other tutorials like this at
@@ -1184,7 +1185,10 @@ class TextAdventureCmd(cmd.Cmd):
                         NPCs[who]['XP'] = 0
                         NPCs[who]['HP'] = 0
                     NPCs[who]['Health'] -= dam 
-                    print('You hit %s with a %s (MAX damage: %s), causing %d damage, %s now has %d health.' % (who, bestWeapon, bestWeaponDamage, dam, who, NPCs[who]['Health']))
+                    if NPCs[who]['Health'] > 0:
+                        print('You hit %s with a %s (MAX damage: %s), causing %d damage, %s now has %d health.' % (who, bestWeapon, bestWeaponDamage, dam, who, NPCs[who]['Health']))
+                    else:
+                        print('You killed %s!' % (who))
                     if NPCs[who]['Health'] > 0:
                         if pdam > playerStats['Health']:
                             pdam = playerStats['Health']

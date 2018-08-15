@@ -1,4 +1,4 @@
-#!/usr/local/bin/python3.6
+#!/usr/bin/python3.6
 
 """
 Text Adventure Demo by Al Sweigart (al@inventwithpython.com)
@@ -457,7 +457,7 @@ worldRooms = {
     'East X Street': {
         DESC: 'East X Street. It\'s like X Street, except East.',
         NORTH: 'Bakery',
-        EAST: 'East Masons Alley',
+        EAST: 'West Masons Alley',
         WEST: 'Town Square',
         SOUTH: 'Wizard Tower',
         NPC: [],
@@ -1175,7 +1175,7 @@ class TextAdventureCmd(cmd.Cmd):
                 if NPCs[who]['Health'] > 0:
                     dam = random.randint(0, worldItems[bestWeapon][DAMAGE] - random.randint(0, NPCs[who]['HP']))
                     if godMode == False:
-                        pdam = random.randint(0, (worldItems[npcBestWeapon][DAMAGE]) - random.randint(0, playerStats['HP']))
+                        pdam = random.randint(0, (worldItems[npcBestWeapon][DAMAGE])) # - random.randint(0, playerStats['HP']))
                     else:
                         pdam = 0
                     if dam > NPCs[who]['Health']:

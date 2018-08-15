@@ -177,7 +177,7 @@ worldRooms = {
         SOUTH: 'South Y Street',
         WEST: 'West X Street',
         NPC: [],
-        GROUND: ['Welcome Sign', 'Fountain', 'Money']},
+        GROUND: ['Welcome Sign', 'Fountain']},
     'North Y Street': {
         DESC: 'The northern end of Y Street has really gone down hill. Pot holes are everywhere, as are stray cats, rats, and wombats.',
         WEST: 'Thief Guild',

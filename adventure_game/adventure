@@ -2,6 +2,7 @@
 
 """
 Text Adventure Demo by Al Sweigart (al@inventwithpython.com)
+Modified by Christian Sacks (christian@sacks.org.uk)
 
 This program is a small text-adventure game that demonstrates the cmd
 and textwrap Python modules. You can find other tutorials like this at

@@ -9,7 +9,7 @@ and textwrap Python modules. You can find other tutorials like this at
 http://inventwithpython.com/blog
 
 The tutorial for this game program is located at: TODO
-The github repo for this program is at: TODO
+The github repo for this program is at: https://github.com/christiansacks/learning_python/blob/master/adventure_game/adventure.py
 
 
 This tutorial does not use classes and object-oriented programming
@@ -46,12 +46,12 @@ The town looks something like this:
 """
 town sewer will look something like this:
 
-          +---+     +-+     +---+   +---+
-          |   |     | |     |   |   |   |
-     +----+   +-----+ +-----+   +---+   |
-     +----+   +-----+ +-----+   +---+   |
-          |   |     | |     |   |   |   |
-          +---+     | |     +---+   +---+
+          +---+     +-+     +---+       +---+
+          |   |     | |     |   |       |   |
+     +----+   +-----+ +-----+   +-------+   +-------+
+     +----+   +-----+ +-----+   +-------+   +-------+
+          |   |     | |     |   |       |   |
+          +---+     | |     +---+       +---+
           +---+     | |     +---+
           |   |     | |     |   |
           |   +-----+ +-----+   |     
@@ -512,6 +512,8 @@ worldRooms = {
         DESC: 'The sewer in South Y Street is relatively clean for a sewer. It looks like it has been well looked after, and there are signs that this has been used for things other than just waste.',
         UP: 'South Y Street',
         NORTH: 'Town Square Sewer',
+        WEST: 'Blacksmith Sewer',
+        EAST: 'Wizard Tower Sewer',
         NPC: [],
         GROUND: []},
     'Bakery Sewer': {
@@ -528,6 +530,16 @@ worldRooms = {
     'Thief Guild Sewer': {
         DESC: 'The sewer beneath the Thief Guild building. Unsurprisingly there\'s a distinct chance this area has been looted already.',
         EAST: 'North Y Sewer',
+        NPC: [],
+        GROUND: []},
+    'Blacksmith Sewer': {
+        DESC: 'The sewer beneath the Blacksmith building. The blacksmith definitely has enough iron in his diet.',
+        EAST: 'South Y Sewer',
+        NPC: [],
+        GROUND: []},
+    'Wizard Tower Sewer': {
+        DESC: 'The sewer beneath the Wizard Tower. Even this brown sludge smells magical.',
+        WEST: 'South Y Sewer',
         NPC: [],
         GROUND: []},
     }

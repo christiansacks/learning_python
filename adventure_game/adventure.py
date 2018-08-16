@@ -739,7 +739,7 @@ worldItems = {
     'Shop Howto': {
         GROUNDDESC: 'A "Shopping HOWTO" note rests on the ground.',
         SHORTDESC: 'a shopping howto',
-        LONGDESC: 'The note reads, "When you are at a shop, you can type "list" to show what is for sale. "buy <item>" will add it to your inventory, or you can sell an item in your inventory with "sell <item>". (Currently, money is not implemented in this program.)',
+        LONGDESC: 'The note reads, "When you are at a shop, you can type "list" to show what is for sale. "buy <item>" will add it to your inventory, or you can value and sell an item in your inventory with "value <item>" and "sell <item>". Every item has a lower resale value than it\'s original purchase price.',
         EDIBLE: True,
         SELL: 1,
         SELLABLE: True,
@@ -791,7 +791,7 @@ NPCs = {
         'Inventory': ['Sword'],
         'Health': 100,
         'XP': 3,
-        'HP': 2,
+        'HP': 3,
         'Money': 100,
         DESCWORDS: ['fred']},
     'Ghost of Christmas Present': {
@@ -805,77 +805,77 @@ NPCs = {
         'Inventory': ['Sword'],
         'Health': 100,
         'XP': 20,
-        'HP': 1,
+        'HP': 10,
         'Money': 40,
         DESCWORDS: ['sam']},
     'Dean': {
         'Inventory': ['Meat Pie', 'Donut', 'Sword'],
         'Health': 100,
         'XP': 20,
-        'HP': 1,
+        'HP': 10,
         'Money': 40,
         DESCWORDS: ['dean']},
     'Castiel': {
         'Inventory': ['Sword', 'Great Sword', 'War Axe'],
         'Health': 300,
         'XP': 200,
-        'HP': 1,
+        'HP': 30,
         'Money': 0,
         DESCWORDS: ['castiel']},
     'Gabriel': {
         'Inventory': ['Sword', 'Great Sword', 'War Axe'],
         'Health': 300,
         'XP': 200,
-        'HP': 1,
+        'HP': 30,
         'Money': 0,
         DESCWORDS: ['gabriel']},
     'Zachariah': {
         'Inventory': ['Sword', 'Great Sword', 'War Axe'],
         'Health': 300,
         'XP': 200,
-        'HP': 1,
+        'HP': 50,
         'Money': 100,
         DESCWORDS: ['zachariah']},
     'Anna': {
         'Inventory': ['Sword', 'Great Sword', 'War Axe'],
         'Health': 300,
         'XP': 300,
-        'HP': 1,
+        'HP': 30,
         'Money': 100,
         DESCWORDS: ['anna']},
     'Michael': {
         'Inventory': ['Sword', 'Great Sword', 'War Axe'],
         'Health': 500,
         'XP': 200,
-        'HP': 1,
+        'HP': 50,
         'Money': 0,
         DESCWORDS: ['michael']},
     'Lucifer': {
         'Inventory': ['Sword', 'Great Sword', 'War Axe'],
         'Health': 500,
         'XP': 200,
-        'HP': 1,
+        'HP': 50,
         'Money': 0,
         DESCWORDS: ['lucifer']},
     'Bobby': {
         'Inventory': ['Meat Pie', 'Donut', 'Sword'],
         'Health': 70,
         'XP': 20,
-        'HP': 1,
+        'HP': 10,
         'Money': 400,
         DESCWORDS: ['bobby']},
     'Ruby': {
         'Inventory': ['Great Sword'],
         'Health': 200,
         'XP': 200,
-        'HP': 1,
+        'HP': 20,
         'Money': 0,
         DESCWORDS: ['ruby']},
     'Meg': {
         'Inventory': ['Great Sword'],
         'Health': 200,
         'XP': 200,
-        'HP': 1,
+        'HP': 20,
         'Money': 100,
         DESCWORDS: ['meg']},
 }
@@ -901,21 +901,35 @@ import cmd, textwrap, time, threading, sys, random, colorama
 def placeRandoms():
     rooms = []
     randRooms = []
+    
+    items = []
+    randItems = []
 
-    for item in worldRooms:
-        rooms.append(item)
+    for room in worldRooms:
+        rooms.append(room)
+        
+    for item in worldItems:
+        items.append(item)
 
-    randRange = random.randint(8, 20)
+    randRange = random.randint(10, len(worldRooms))
 
     # Lets place some money in some random rooms
-    for i in range(randRange):
+    for r in range(randRange):
         randRooms.append(random.choice(rooms))
-
-    #randRooms = list(set(randRooms))
+        
+    for i in range(randRange):
+        randItems.append(random.choice(items))
 
     for room in randRooms:
-        worldRooms[room][GROUND].append('Moneybag')
-#         print('Moneybag placed in %s' % (room))
+        #worldRooms[room][GROUND].append('Moneybag')
+        if len(randItems) > 0:
+            item = random.choice(randItems)
+            randItems.remove(item)
+            worldRooms[room][GROUND].append(item)
+            if (len(randItems) % 3) > 1:
+                worldRooms[room][GROUND].append('Moneybag')
+                #print('Placed Moneybag at %s : %d' % (room, len(randItems) % 3))
+            #print('Placed %s at %s : %d' % (item, room, len(randItems) % 3))
 
     # Lets place some NPC's in some random rooms
     npcs = []
@@ -1136,11 +1150,16 @@ class TextAdventureCmd(cmd.Cmd):
         print('Use \'hit\' to hit a character.')
 
     def do_hit(self, arg):
+        who = arg
+
         if playerStats['Health'] < 1:
             print('You don\'t have enough health to do that.')
             return None
+            
+        if NPCs[who]['Health'] < 1:
+            print('You can\'t fight a dead person.')
+            return None
 
-        who = arg
         weaponsList = {}
         npcWeaponsList = {}
 
@@ -1186,7 +1205,7 @@ class TextAdventureCmd(cmd.Cmd):
         if canFight == True:
             if who in worldRooms[location][NPC]:
                 if NPCs[who]['Health'] > 0:
-                    dam = random.randint(0, worldItems[bestWeapon][DAMAGE] - random.randint(0, NPCs[who]['HP']))
+                    dam = random.randint(0, worldItems[bestWeapon][DAMAGE]) # - random.randint(0, NPCs[who]['HP']))
                     if godMode == False:
                         pdam = random.randint(0, (worldItems[npcBestWeapon][DAMAGE])) # - random.randint(0, playerStats['HP']))
                     else:
@@ -1205,7 +1224,8 @@ class TextAdventureCmd(cmd.Cmd):
                     if NPCs[who]['Health'] > 0:
                         if pdam > playerStats['Health']:
                             pdam = playerStats['Health']
-                        playerStats['Health'] -= pdam
+                        if pdam > playerStats['HP']:
+                            playerStats['Health'] -= pdam - playerStats['HP']
                         print('%s hit you with a %s causing %d damage.' % (who, npcBestWeapon, pdam))
                 else:
                     print('%s is dead.' % (who))

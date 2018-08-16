@@ -1,4 +1,4 @@
-#!/usr/bin/python3.6
+#!/usr/local/bin/python3.6
 
 """
 Text Adventure Demo by Al Sweigart (al@inventwithpython.com)
@@ -883,7 +883,8 @@ gameSeconds = 0
 gameMinutes = 0
 gameHours = 0
 
-import cmd, textwrap, time, threading, sys, random
+import cmd, textwrap, time, threading, sys, random, colorama
+
 
 def placeRandoms():
     rooms = []
@@ -1751,6 +1752,9 @@ class TextAdventureCmd(cmd.Cmd):
 
 
 if __name__ == '__main__':
+    # Initialize 'colorama'
+    colorama.init()
+    
     print(WHITE)
     print('Text Adventure!')
     print('===============')
@@ -1762,3 +1766,6 @@ if __name__ == '__main__':
     example = ThreadingExample()
     TextAdventureCmd().cmdloop()
     print('Thanks for playing!')
+    
+    # Deinitialize 'colorama'
+    colorama.deinit()

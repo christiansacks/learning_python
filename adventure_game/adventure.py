@@ -204,7 +204,7 @@ worldRooms = {
         SOUTH: 'West Masons Alley',
         SHOP: ['Gravestone'],
         NPC: [],
-        GROUND: []},
+        GROUND: ['Shop Howto']},
     'Hotel Entrance': {
         DESC: 'The only hotel for miles around. You are at the entrance. There isn\'t a bellboy in sight.',
         NORTH: 'Hotel Lobby',
@@ -231,7 +231,7 @@ worldRooms = {
         EAST: 'Hotel Lobby',
         SHOP: ['Meat Pie', 'Donut', 'Continental Breakfast', 'Cheese Board'],
         NPC: [],
-        GROUND: []},
+        GROUND: ['Shop Howto']},
     'Hotel Reception': {
         DESC: 'You are in the hotel reception, Strange, there isn\'t anyone here.',
         WEST: 'Hotel Lobby',
@@ -453,7 +453,7 @@ worldRooms = {
         EAST: 'West X Street',
         SHOP: ['Anvil'],
         NPC: [],
-        GROUND: ['Anvil', 'Anvil', 'Anvil', 'Anvil']},
+        GROUND: ['Shop Howto', 'Anvil', 'Anvil', 'Anvil', 'Anvil']},
     'East X Street': {
         DESC: 'East X Street. It\'s like X Street, except East.',
         NORTH: 'Bakery',

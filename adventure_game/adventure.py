@@ -1080,6 +1080,23 @@ def updatePrompt():
             
     TextAdventureCmd.prompt = '\n%s[Health:%s%d%s][Money:%s%d%s]\n> %s' % (YELLOW, healthColour, playerStats['Health'], YELLOW, GREEN, playerStats['Money'], YELLOW, WHITE)
 
+def checkNPCs():
+        npcs_alive = 0
+        npcs_dead = 0
+        for room in worldRooms:
+            for npc in worldRooms[room][NPC]:
+                if NPCs[npc]['Health'] > 0:
+                    npcs_alive += 1
+                if NPCs[npc]['Health'] < 1:
+                    npcs_dead += 1
+
+        totalNPCs = npcs_alive + npcs_dead
+        print('NPC\'s still alive: %s\nNPC\'s killed: %s' % (npcs_alive, npcs_dead))
+        if npcs_dead == totalNPCs:
+            return True
+        else:
+            return False
+
 class ThreadingExample(object):
     """ Threading example class
     The run() method will be started and it will run in the background
@@ -1131,6 +1148,9 @@ class TextAdventureCmd(cmd.Cmd):
     def do_quit(self, arg):
         """Quit the game."""
         return True # this exits the Cmd application loop in TextAdventureCmd.cmdloop()
+
+    def do_checknpcs(self, arg):
+        print(checkNPCs())
 
     def do_save(self, arg):
         """Save current player's stats, location, any items carried, and state of any items and npc's left in the world"""
@@ -1185,19 +1205,15 @@ class TextAdventureCmd(cmd.Cmd):
 
         #load player stats from file playername.playerStats
         playerStats = pickle.load(open(file_stats,'rb'))
-        #print('Loaded playerStats from %s' % (file_stats))
 
         #load player inventory from file playername.inventory
         inventory = pickle.load(open(file_inven,'rb'))
-        #print('Loaded player inventory from %s' % (file_inven))
 
         #load worldRooms from file playername.worldRooms
         worldRooms = pickle.load(open(file_rooms,'rb'))
-        #print('Loaded worldRooms from %s' % (file_rooms))
 
         #load NPCs from file playername.NPCs
         NPCs = pickle.load(open(file_npcs,'rb'))
-        #print('Loaded NPCs from %s' % (file_npcs))
 
         #print('%s\n%s\n%s' % (playerStats, worldRooms, NPCs))
         location = playerStats['Location']
@@ -1330,6 +1346,8 @@ class TextAdventureCmd(cmd.Cmd):
             playerStats['Health'] -= 1
             updatePrompt()
 
+        if checkNPCs == True:
+            print('Congratulations, you have defeated all the\nenemies and have won the game!')
 
     # These direction commands have a long (i.e. north) and show (i.e. n) form.
     # Since the code is basically the same, I put it in the moveDirection()

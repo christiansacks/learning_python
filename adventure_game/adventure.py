@@ -130,9 +130,14 @@ would be harder to find.
 
 import os, cmd, textwrap, time, threading, sys, random, colorama, pickle
 
-USERNAME = sys.argv[1]
-NODENUMB = sys.argv[2]
-USERIPAD = sys.argv[3]
+if len(sys.argv) < 4:
+    USERNAME = 'Unknown User'
+    NODENUMB = '0'
+    USERIPAD = '127.0.0.1'
+else:
+    USERNAME = sys.argv[1]
+    NODENUMB = sys.argv[2]
+    USERIPAD = sys.argv[3]
 
 SAVES_FOLDER = '/mystic/scripts/adventure_saves/'
 
@@ -1197,6 +1202,7 @@ class TextAdventureCmd(cmd.Cmd):
         #print('%s\n%s\n%s' % (playerStats, worldRooms, NPCs))
         location = playerStats['Location']
 
+        updatePrompt()
         print('Loaded all data')
 
 

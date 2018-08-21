@@ -61,7 +61,7 @@ town sewer will look something like this:
                     + +
 """
 
-""""
+"""
 The internal layout of the hotel looks something like this:
 
 1st Floor
@@ -128,6 +128,14 @@ name will exist. If we mistyped the strings, the bugs that it produces
 would be harder to find.
 """
 
+import cmd, textwrap, time, threading, sys, random, colorama, pickle
+
+USERNAME = sys.argv[1]
+NODENUMB = sys.argv[2]
+USERIPAD = sys.argv[3]
+
+SAVES_FOLDER = 'adventure_saves/'
+
 DESC = 'desc'
 NORTH = 'north'
 SOUTH = 'south'
@@ -159,7 +167,7 @@ LEVEL = 'level'
 POINTS = 'points'
 
 SCREEN_WIDTH = 80
-
+location = ''
 
 RED = '\033[1;31;1m'
 GREEN = '\033[1;32;1m'
@@ -766,6 +774,10 @@ worldItems = {
     }
 
 playerStats = {
+    'Player Name': USERNAME,
+    'Player IP': USERIPAD,
+    'Node': NODENUMB,
+    'Location': 'Town Square',
     'Health': 100,
     'XP': 1,
     'HP': 10,
@@ -886,7 +898,7 @@ The value in the location variable will always be a key in the world variable
 and the value in the inventory list will always be a key in the worldItems
 variable.
 """
-location = 'Town Square' # start in town square
+location = playerStats['Location'] # start in default player location denoted in the playerStats list
 inventory = ['README Note', 'Sword', 'Donut'] # start with blank inventory
 showFullExits = True
 godMode = False
@@ -895,8 +907,7 @@ gameSeconds = 0
 gameMinutes = 0
 gameHours = 0
 
-import cmd, textwrap, time, threading, sys, random, colorama
-
+#import cmd, textwrap, time, threading, sys, random, colorama
 
 def placeRandoms():
     rooms = []
@@ -1019,6 +1030,8 @@ def moveDirection(direction):
     if not godMode:
         playerStats['Health'] -= 1
 
+    playerStats['Location'] = location
+
 
 def getAllDescWords(itemList):
     """Returns a list of "description words" for each item named in itemList."""
@@ -1060,7 +1073,7 @@ def updatePrompt():
     else:
         healthColour = RED
             
-    TextAdventureCmd.prompt = '\n%s[Health:%s%d%s][Money:%s%d%s]> %s' % (YELLOW, healthColour, playerStats['Health'], YELLOW, GREEN, playerStats['Money'], YELLOW, WHITE)
+    TextAdventureCmd.prompt = '\n%s[Health:%s%d%s][Money:%s%d%s]\n> %s' % (YELLOW, healthColour, playerStats['Health'], YELLOW, GREEN, playerStats['Money'], YELLOW, WHITE)
 
 class ThreadingExample(object):
     """ Threading example class
@@ -1102,7 +1115,7 @@ class ThreadingExample(object):
             
 
 class TextAdventureCmd(cmd.Cmd):
-    prompt = '\n%s[Health:%s%d%s][Money:%s%d%s]> %s' % (YELLOW, GREEN, playerStats['Health'], YELLOW, GREEN, playerStats['Money'], YELLOW, WHITE)
+    prompt = '\n%s[Health:%s%d%s][Money:%s%d%s]\n> %s' % (YELLOW, GREEN, playerStats['Health'], YELLOW, GREEN, playerStats['Money'], YELLOW, WHITE)
     #updatePrompt()
     
     # The default() method is called when none of the other do_*() command methods match.
@@ -1113,6 +1126,57 @@ class TextAdventureCmd(cmd.Cmd):
     def do_quit(self, arg):
         """Quit the game."""
         return True # this exits the Cmd application loop in TextAdventureCmd.cmdloop()
+
+    def do_save(self, arg):
+        """Save current player's stats, location, any items carried, and state of any items and npc's left in the world"""
+        """This is a work in progress"""
+        global playerStats
+        global worldRooms
+        global NPCs
+        global location
+
+        #save player stats to file playername.playerStats
+        file = '%s%s.%s' % (SAVES_FOLDER, USERNAME, 'playerStats')
+        pickle.dump(playerStats, open(file,'wb'))
+        print('Saved playerStats data to %s' % (file))
+
+        #save current worldRooms data to file playername.worldRooms
+        file = '%s%s.%s' % (SAVES_FOLDER, USERNAME, 'worldRooms')
+        pickle.dump(worldRooms, open(file,'wb'))
+        print('Saved worldRooms data to %s' % (file))
+
+        #save current NPCs data to file playername.NPCs
+        file = '%s%s.%s' % (SAVES_FOLDER, USERNAME, 'NPCs')
+        pickle.dump(NPCs, open(file,'wb'))
+        print('Saved NPCs data to %s' % (file))
+
+
+    def do_load(self, arg):
+        """Load all the previously saved data from a player save"""
+        global playerStats
+        global worldRooms
+        global NPCs
+        global location
+
+        file_stats = '%s%s.%s' % (SAVES_FOLDER, USERNAME, 'playerStats')
+        file_rooms = '%s%s.%s' % (SAVES_FOLDER, USERNAME, 'worldRooms')
+        file_npcs  = '%s%s.%s' % (SAVES_FOLDER, USERNAME, 'NPCs')
+
+        #load player stats from file playername.playerStats
+        playerStats = pickle.load(open(file_stats,'rb'))
+        print('Loaded playerStats from %s' % (file_stats))
+
+        #load worldRooms from file playername.worldRooms
+        worldRooms = pickle.load(open(file_rooms,'rb'))
+        print('Loaded worldRooms from %s' % (file_rooms))
+
+        #load NPCs from file playername.NPCs
+        NPCs = pickle.load(open(file_npcs,'rb'))
+        print('Loaded NPCs from %s' % (file_npcs))
+
+        #print('%s\n%s\n%s' % (playerStats, worldRooms, NPCs))
+        location = playerStats['Location']
+
 
     def do_godMode(self, arg):
         """Enable / Disable God Mode (i.e. don't lose health over time)"""
@@ -1229,8 +1293,6 @@ class TextAdventureCmd(cmd.Cmd):
                         print('%s hit you with a %s causing %d damage.' % (who, npcBestWeapon, pdam))
                 else:
                     print('%s is dead.' % (who))
-                
-                
             else:
                 print('%s isn\'t nearby.' % (who))
         else:
@@ -1332,10 +1394,10 @@ class TextAdventureCmd(cmd.Cmd):
     def do_stats(self, arg):
         """Display the user stats."""
 
-    # get a list of inventory items with duplicates removed:
+        # get a list of inventory items with duplicates removed:
         print('User Stats:')
         for key in playerStats.keys():
-            print('  %s (%s%d%s)' % (key, GREEN, playerStats[key], WHITE))
+            print('  %s\t%s%s%s' % (key.ljust(11), GREEN, playerStats[key], WHITE))
         print('\nTime played: %dh %dm %ds' % (gameHours, gameMinutes, gameSeconds))
 
     do_status = do_stats
@@ -1786,11 +1848,11 @@ class TextAdventureCmd(cmd.Cmd):
 if __name__ == '__main__':
     # Initialize 'colorama'
     colorama.init()
-    
     print(WHITE)
     print('Text Adventure!')
     print('===============')
     print()
+    print('Welcome', USERNAME, 'from IP', USERIPAD, 'using node', NODENUMB)
     print('(Type "help" for commands.)')
     print()
     placeRandoms()
@@ -1798,6 +1860,6 @@ if __name__ == '__main__':
     example = ThreadingExample()
     TextAdventureCmd().cmdloop()
     print('Thanks for playing!')
-    
+
     # Deinitialize 'colorama'
     colorama.deinit()

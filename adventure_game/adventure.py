@@ -128,13 +128,13 @@ name will exist. If we mistyped the strings, the bugs that it produces
 would be harder to find.
 """
 
-import cmd, textwrap, time, threading, sys, random, colorama, pickle
+import os, cmd, textwrap, time, threading, sys, random, colorama, pickle
 
 USERNAME = sys.argv[1]
 NODENUMB = sys.argv[2]
 USERIPAD = sys.argv[3]
 
-SAVES_FOLDER = 'adventure_saves/'
+SAVES_FOLDER = '/mystic/scripts/adventure_saves/'
 
 DESC = 'desc'
 NORTH = 'north'
@@ -1131,6 +1131,7 @@ class TextAdventureCmd(cmd.Cmd):
         """Save current player's stats, location, any items carried, and state of any items and npc's left in the world"""
         """This is a work in progress"""
         global playerStats
+        global inventory
         global worldRooms
         global NPCs
         global location
@@ -1138,44 +1139,65 @@ class TextAdventureCmd(cmd.Cmd):
         #save player stats to file playername.playerStats
         file = '%s%s.%s' % (SAVES_FOLDER, USERNAME, 'playerStats')
         pickle.dump(playerStats, open(file,'wb'))
-        print('Saved playerStats data to %s' % (file))
+        #print('Saved playerStats data to %s' % (file))
+
+        #save player inventory to file playername.inventory
+        file = '%s%s.%s' % (SAVES_FOLDER, USERNAME, 'inventory')
+        pickle.dump(inventory, open(file,'wb'))
+        #print('Saved inventory data to %s' % (file))
 
         #save current worldRooms data to file playername.worldRooms
         file = '%s%s.%s' % (SAVES_FOLDER, USERNAME, 'worldRooms')
         pickle.dump(worldRooms, open(file,'wb'))
-        print('Saved worldRooms data to %s' % (file))
+        #print('Saved worldRooms data to %s' % (file))
 
         #save current NPCs data to file playername.NPCs
         file = '%s%s.%s' % (SAVES_FOLDER, USERNAME, 'NPCs')
         pickle.dump(NPCs, open(file,'wb'))
-        print('Saved NPCs data to %s' % (file))
+        #print('Saved NPCs data to %s' % (file))
+
+        print('Saved all data')
 
 
     def do_load(self, arg):
         """Load all the previously saved data from a player save"""
         global playerStats
+        global inventory
         global worldRooms
         global NPCs
         global location
 
         file_stats = '%s%s.%s' % (SAVES_FOLDER, USERNAME, 'playerStats')
+        file_inven = '%s%s.%s' % (SAVES_FOLDER, USERNAME, 'inventory')
         file_rooms = '%s%s.%s' % (SAVES_FOLDER, USERNAME, 'worldRooms')
         file_npcs  = '%s%s.%s' % (SAVES_FOLDER, USERNAME, 'NPCs')
 
+        #check if a file exists, if not, assume that no save has been done before and return message saying no previous save
+        if os.path.exists(file_stats) == False:
+            print('No previous saves found')
+            return
+
+
         #load player stats from file playername.playerStats
         playerStats = pickle.load(open(file_stats,'rb'))
-        print('Loaded playerStats from %s' % (file_stats))
+        #print('Loaded playerStats from %s' % (file_stats))
+
+        #load player inventory from file playername.inventory
+        inventory = pickle.load(open(file_inven,'rb'))
+        #print('Loaded player inventory from %s' % (file_inven))
 
         #load worldRooms from file playername.worldRooms
         worldRooms = pickle.load(open(file_rooms,'rb'))
-        print('Loaded worldRooms from %s' % (file_rooms))
+        #print('Loaded worldRooms from %s' % (file_rooms))
 
         #load NPCs from file playername.NPCs
         NPCs = pickle.load(open(file_npcs,'rb'))
-        print('Loaded NPCs from %s' % (file_npcs))
+        #print('Loaded NPCs from %s' % (file_npcs))
 
         #print('%s\n%s\n%s' % (playerStats, worldRooms, NPCs))
         location = playerStats['Location']
+
+        print('Loaded all data')
 
 
     def do_godMode(self, arg):

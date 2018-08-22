@@ -1150,6 +1150,7 @@ class TextAdventureCmd(cmd.Cmd):
         return True # this exits the Cmd application loop in TextAdventureCmd.cmdloop()
 
     def do_checknpcs(self, arg):
+        """Check how many NPC's are alive and how many are dead"""
         print(checkNPCs())
 
     def do_save(self, arg):
@@ -1164,22 +1165,18 @@ class TextAdventureCmd(cmd.Cmd):
         #save player stats to file playername.playerStats
         file = '%s%s.%s' % (SAVES_FOLDER, USERNAME, 'playerStats')
         pickle.dump(playerStats, open(file,'wb'))
-        #print('Saved playerStats data to %s' % (file))
 
         #save player inventory to file playername.inventory
         file = '%s%s.%s' % (SAVES_FOLDER, USERNAME, 'inventory')
         pickle.dump(inventory, open(file,'wb'))
-        #print('Saved inventory data to %s' % (file))
 
         #save current worldRooms data to file playername.worldRooms
         file = '%s%s.%s' % (SAVES_FOLDER, USERNAME, 'worldRooms')
         pickle.dump(worldRooms, open(file,'wb'))
-        #print('Saved worldRooms data to %s' % (file))
 
         #save current NPCs data to file playername.NPCs
         file = '%s%s.%s' % (SAVES_FOLDER, USERNAME, 'NPCs')
         pickle.dump(NPCs, open(file,'wb'))
-        #print('Saved NPCs data to %s' % (file))
 
         print('Saved all data')
 

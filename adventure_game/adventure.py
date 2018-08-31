@@ -128,7 +128,7 @@ name will exist. If we mistyped the strings, the bugs that it produces
 would be harder to find.
 """
 
-import os, cmd, textwrap, time, threading, sys, random, colorama, pickle
+import os, cmd, textwrap, time, threading, sys, random, colorama, pickle, datetime
 
 if len(sys.argv) < 4:
     USERNAME = 'Unknown User'
@@ -162,6 +162,7 @@ SELLABLE = 'sellable'
 GAIN = 'gain'
 TYPE = 'type'
 NPC = 'npc'
+GUESTBOOK = 'guestbook'
 
 BODY = 'body'
 SHEILD = 'sheild'
@@ -246,8 +247,9 @@ worldRooms = {
         NPC: [],
         GROUND: ['Shop Howto']},
     'Hotel Reception': {
-        DESC: 'You are in the hotel reception, Strange, there isn\'t anyone here.',
+        DESC: 'You are in the hotel reception, Strange, there isn\'t anyone here. There is a guestbook on the desk, would you like to sign it?',
         WEST: 'Hotel Lobby',
+        GUESTBOOK: 'Hotel Reception',
         NPC: [],
         GROUND: []},
     'Elevator 2': {
@@ -912,8 +914,6 @@ gameSeconds = 0
 gameMinutes = 0
 gameHours = 0
 
-#import cmd, textwrap, time, threading, sys, random, colorama
-
 def placeRandoms():
     rooms = []
     randRooms = []
@@ -1153,6 +1153,72 @@ class TextAdventureCmd(cmd.Cmd):
         """Check how many NPC's are alive and how many are dead"""
         print(checkNPCs())
 
+    def do_signguestbook(self, arg):
+        """Signs the guestbook if there's one to sign"""
+
+        if worldRooms[location].get(GUESTBOOK) == None:
+            print('You can\'t do that here')
+            return
+
+        guestbook = {}
+
+        """
+        guestbook = {
+            'LOCATION': {
+                'timestamp': {
+                    NAME: USERNAME,
+                    NODE: NODENUMB,
+                    IPAD: USERIPAD},
+            },
+        }
+        """
+
+        file_guestbook = '%s%s.dat' % (SAVES_FOLDER, 'guestbook')
+
+        if os.path.exists(file_guestbook) == False:
+            print('No previous entries found')
+            guestbook = {location: {}}
+        else:
+            guestbook = pickle.load(open(file_guestbook,'rb'))
+
+        ts = time.time()
+        #st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+        st = datetime.datetime.fromtimestamp(ts).strftime('%A, %B %d, %Y')
+
+        guestbook[location][st] = {'NAME': USERNAME, 'NODE': NODENUMB, 'IPAD': USERIPAD}
+        os.system('clear')
+        #print(location)
+        #print(worldRooms[location].get(GUESTBOOK))
+        #print(guestbook)
+        pickle.dump(guestbook, open(file_guestbook,'wb'))
+        print('Successfully added to the guestbook')
+        guestbook = {}
+
+    def do_readguestbook(self, arg):
+        """Shows the entries in a guestbook"""
+        if worldRooms[location].get(GUESTBOOK) == None:
+            print('You can\'t do that here')
+            return
+
+        guestbook = {}
+        gb_entries = []
+        file_guestbook = '%s%s.dat' % (SAVES_FOLDER, 'guestbook')
+        guestbook = pickle.load(open(file_guestbook, 'rb'))
+
+        print('Showing the last 5 entries\n')
+
+        for entry in guestbook[location]:
+            gb_entries.append(entry)
+
+        gb_last5 = gb_entries[-5:]
+
+        for entry in gb_last5:
+            user = guestbook[location][entry]['NAME']
+            node = guestbook[location][entry]['NODE']
+            ipad = guestbook[location][entry]['IPAD']
+            entry_text = '  %s signed this guestbook on %s from IP %s' % (user, entry, ipad)
+            print('\n'.join(textwrap.wrap(entry_text, SCREEN_WIDTH)))
+
     def do_save(self, arg):
         """Save current player's stats, location, any items carried, and state of any items and npc's left in the world"""
         """This is a work in progress"""
@@ -1323,7 +1389,7 @@ class TextAdventureCmd(cmd.Cmd):
                         NPCs[who]['HP'] = 0
                     NPCs[who]['Health'] -= dam 
                     if NPCs[who]['Health'] > 0:
-                        print('You hit %s with a %s (MAX damage: %s), causing %d damage, %s now has %d health.' % (who, bestWeapon, bestWeaponDamage, dam, who, NPCs[who]['Health']))
+                        print('You hit %s with a %s (MAX damage: %s), causing %d damage.\n%s now has %d health.' % (who, bestWeapon, bestWeaponDamage, dam, who, NPCs[who]['Health']))
                     else:
                         print('You killed %s!' % (who))
                     if NPCs[who]['Health'] > 0:
@@ -1895,7 +1961,8 @@ if __name__ == '__main__':
     print('Text Adventure!')
     print('===============')
     print()
-    print('Welcome', USERNAME, 'from IP', USERIPAD, 'using node', NODENUMB)
+    print('Welcome %s from IP %s on node %s' % (USERNAME, USERIPAD, NODENUMB))
+#    print('Your security level is %s' % (USERSECL))
     print('(Type "help" for commands.)')
     print()
     placeRandoms()

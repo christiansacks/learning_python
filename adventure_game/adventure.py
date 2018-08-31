@@ -1200,6 +1200,12 @@ class TextAdventureCmd(cmd.Cmd):
             print('You can\'t do that here')
             return
 
+        file_guestbook = '%s%s.dat' % (SAVES_FOLDER, 'guestbook')
+        if os.path.exists(file_guestbook) == False:
+            print('No previous entries found')
+            return
+
+
         guestbook = {}
         gb_entries = []
         file_guestbook = '%s%s.dat' % (SAVES_FOLDER, 'guestbook')

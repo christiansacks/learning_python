@@ -1182,8 +1182,8 @@ class TextAdventureCmd(cmd.Cmd):
             guestbook = pickle.load(open(file_guestbook,'rb'))
 
         ts = time.time()
-        #st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-        st = datetime.datetime.fromtimestamp(ts).strftime('%A, %B %d, %Y')
+        st = datetime.datetime.fromtimestamp(ts).strftime('%d-%m-%Y %H:%M:%S')
+        #st = datetime.datetime.fromtimestamp(ts).strftime('%B %d, %Y %H:%M:%S')
 
         guestbook[location][st] = {'NAME': USERNAME, 'NODE': NODENUMB, 'IPAD': USERIPAD}
         os.system('clear')
@@ -1212,6 +1212,10 @@ class TextAdventureCmd(cmd.Cmd):
         guestbook = pickle.load(open(file_guestbook, 'rb'))
 
         print('Showing the last 5 entries\n')
+        print('.--------------------------+--------------------------+---------------------.')
+        print('| ' + '{:25}'.format('Date') + '| ' + '{:25}'.format('Name') + '| ' + '{:20}'.format('IP') + '|')
+        print('+--------------------------+--------------------------+---------------------+')
+
 
         for entry in guestbook[location]:
             gb_entries.append(entry)
@@ -1222,8 +1226,11 @@ class TextAdventureCmd(cmd.Cmd):
             user = guestbook[location][entry]['NAME']
             node = guestbook[location][entry]['NODE']
             ipad = guestbook[location][entry]['IPAD']
-            entry_text = '  %s signed this guestbook on %s from IP %s' % (user, entry, ipad)
+
+            entry_text = '| ' + '{:25.24}'.format(entry) + '| ' + '{:25.24}'.format(user) + '| ' + '{:20}'.format(ipad) + '|' 
             print('\n'.join(textwrap.wrap(entry_text, SCREEN_WIDTH)))
+        print('\'--------------------------+--------------------------+---------------------\'')
+
 
     def do_save(self, arg):
         """Save current player's stats, location, any items carried, and state of any items and npc's left in the world"""

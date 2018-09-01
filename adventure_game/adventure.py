@@ -163,6 +163,7 @@ GAIN = 'gain'
 TYPE = 'type'
 NPC = 'npc'
 GUESTBOOK = 'guestbook'
+NOTICEBOARD = 'noticeboard'
 
 BODY = 'body'
 SHEILD = 'sheild'
@@ -185,11 +186,12 @@ WHITE = '\033[1;37;1m'
 
 worldRooms = {
     'Town Square': {
-        DESC: 'The town square is a large open space with a fountain in the center. Streets lead in all directions.',
+        DESC: 'The town square is a large open space with a fountain in the center. Streets lead in all directions. The town notice board stands here.',
         NORTH: 'North Y Street',
         EAST: 'East X Street',
         SOUTH: 'South Y Street',
         WEST: 'West X Street',
+        NOTICEBOARD: True,
         NPC: [],
         GROUND: ['Welcome Sign', 'Fountain']},
     'North Y Street': {
@@ -1153,6 +1155,124 @@ class TextAdventureCmd(cmd.Cmd):
     def do_checknpcs(self, arg):
         """Check how many NPC's are alive and how many are dead"""
         print(checkNPCs())
+
+    def do_readnoticeboard(self, arg):
+        """Reads a notice board"""
+
+        """
+        noticeboard = {
+            'LOCATION': {
+                'timestamp': {
+                    NAME: USERNAME,
+                    NODE: NODENUMB,
+                    IPAD: USERIPAD,
+                    UMSG: USERMESSAGE},
+            },
+        }
+        """
+
+        if worldRooms[location].get(NOTICEBOARD) == None:
+            print('You can\'t do that here')
+            return
+
+        file_noticeboard = '%s%s.dat' % (SAVES_FOLDER, 'noticeboard')
+        if os.path.exists(file_noticeboard) == False:
+            print('No previous entries found')
+            return
+
+        noticeboard = {}
+        nb_entries = []
+        #file_noticeboard = '%s%s.dat' % (SAVES_FOLDER, 'noticeboard')
+        noticeboard = pickle.load(open(file_noticeboard, 'rb'))
+
+        if not location in noticeboard.keys():
+            print('No entries in this notice board')
+            return
+
+        if arg.lower() == 'clear':
+            if location in noticeboard:
+                del noticeboard[location]
+                pickle.dump(noticeboard, open(file_noticeboard,'wb'))
+                print('Notice board for %s cleared' % (location))
+                return
+
+        print('Showing the last 5 entries for the %s notice board\n' % (location))
+        print('+---------------------+----------------+--------------------------------------+')
+        print('| ' + '{:20}'.format('Date') + '| ' + '{:15}'.format('Name') + '| ' + '{:37}'.format('Message') + '|')
+        print('+---------------------+----------------+--------------------------------------+')
+
+        e = 0
+        for entry in noticeboard[location]:
+            nb_entries.append(entry)
+            e += 1
+
+        if e < 1:
+            return
+
+        nb_last5 = nb_entries[-5:]
+
+        for entry in nb_last5:
+            user = noticeboard[location][entry]['NAME']
+            node = noticeboard[location][entry]['NODE']
+            ipad = noticeboard[location][entry]['IPAD']
+            umsg = noticeboard[location][entry]['UMSG']
+
+            entry_text = '| ' + '{:20.19}'.format(entry) + '| ' + '{:15.14}'.format(user) + '| ' + '{:37.36}'.format(umsg) + '|' 
+            print('\n'.join(textwrap.wrap(entry_text, SCREEN_WIDTH)))
+        print('+---------------------+----------------+--------------------------------------+')
+
+    def do_signnoticeboard(self, arg):
+        """Signs the notice board if there's one to sign"""
+
+        if worldRooms[location].get(NOTICEBOARD) == None:
+            print('You can\'t do that here')
+            return
+
+        noticeboard = {}
+
+        """
+        noticeboard = {
+            'LOCATION': {
+                'timestamp': {
+                    NAME: USERNAME,
+                    NODE: NODENUMB,
+                    IPAD: USERIPAD,
+                    UMSG: USERMESSAGE},
+            },
+        }
+        """
+
+        file_noticeboard = '%s%s.dat' % (SAVES_FOLDER, 'noticeboard')
+
+        if os.path.exists(file_noticeboard) == False:
+            print('No previous entries found')
+            noticeboard = {location: {}}
+        else:
+            noticeboard = pickle.load(open(file_noticeboard,'rb'))
+
+        ts = time.time()
+        st = datetime.datetime.fromtimestamp(ts).strftime('%d-%m-%Y %H:%M:%S')
+
+        if not location in noticeboard.keys():
+            noticeboard[location] = {}
+
+        is_ok = False
+        while not is_ok:
+            USERMESSAGE = input('Enter a short message (36 characters or less): ')
+            print('You typed, ' + '"{:36.36}"'.format(USERMESSAGE))
+            check = input('Is this ok? y/n/q: ')
+            if check.lower() == 'q': return
+            if check.lower() == 'y': is_ok = True
+
+        noticeboard[location][st] = {'NAME': USERNAME, 'NODE': NODENUMB, 'IPAD': USERIPAD, 'UMSG': USERMESSAGE}
+        os.system('clear')
+        #print(location)
+        #print(worldRooms[location].get(GUESTBOOK))
+        #print(guestbook)
+        pickle.dump(noticeboard, open(file_noticeboard,'wb'))
+        print('Successfully added to the notice board')
+        guestbook = {}
+
 
     def do_signguestbook(self, arg):
         """Signs the guestbook if there's one to sign"""

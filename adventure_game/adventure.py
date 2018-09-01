@@ -54,7 +54,7 @@ town sewer will look something like this:
           +---+     | |     +---+       +---+
           +---+     | |     +---+
           |   |     | |     |   |
-          |   +-----+ +-----+   |     
+          |   +-----+ +-----+   |
           |   +-----+ +-----+   |
           |   |     | |     |   |
           +---+     | |     +---+
@@ -249,7 +249,7 @@ worldRooms = {
     'Hotel Reception': {
         DESC: 'You are in the hotel reception, Strange, there isn\'t anyone here. There is a guestbook on the desk, would you like to sign it?',
         WEST: 'Hotel Lobby',
-        GUESTBOOK: 'Hotel Reception',
+        GUESTBOOK: True,
         NPC: [],
         GROUND: []},
     'Elevator 2': {
@@ -504,9 +504,10 @@ worldRooms = {
         NPC: [],
         GROUND: ['Telescope']},
     'Magical Escalator to Nowhere': {
-        DESC: 'No matter how much you climb the escalator, it doesn\'t seem to be getting you anywhere.',
+        DESC: 'No matter how much you climb the escalator, it doesn\'t seem to be getting you anywhere. You can see a visitors guest book.',
         UP: 'Magical Escalator to Nowhere',
         DOWN: 'Observation Deck',
+        GUESTBOOK: True,
         NPC: [],
         GROUND: []},
     'North Y Sewer': {
@@ -1156,7 +1157,7 @@ class TextAdventureCmd(cmd.Cmd):
     def do_signguestbook(self, arg):
         """Signs the guestbook if there's one to sign"""
 
-        if worldRooms[location].get(GUESTBOOK) == None:
+        if worldRooms[location].get(GUESTBOOK, True) == False:
             print('You can\'t do that here')
             return
 
@@ -1183,7 +1184,9 @@ class TextAdventureCmd(cmd.Cmd):
 
         ts = time.time()
         st = datetime.datetime.fromtimestamp(ts).strftime('%d-%m-%Y %H:%M:%S')
-        #st = datetime.datetime.fromtimestamp(ts).strftime('%B %d, %Y %H:%M:%S')
+
+        if not location in guestbook.keys():
+            guestbook[location] = {}
 
         guestbook[location][st] = {'NAME': USERNAME, 'NODE': NODENUMB, 'IPAD': USERIPAD}
         os.system('clear')
@@ -1196,7 +1199,7 @@ class TextAdventureCmd(cmd.Cmd):
 
     def do_readguestbook(self, arg):
         """Shows the entries in a guestbook"""
-        if worldRooms[location].get(GUESTBOOK) == None:
+        if worldRooms[location].get(GUESTBOOK, True) == False:
             print('You can\'t do that here')
             return
 
@@ -1205,20 +1208,34 @@ class TextAdventureCmd(cmd.Cmd):
             print('No previous entries found')
             return
 
-
         guestbook = {}
         gb_entries = []
         file_guestbook = '%s%s.dat' % (SAVES_FOLDER, 'guestbook')
         guestbook = pickle.load(open(file_guestbook, 'rb'))
 
-        print('Showing the last 5 entries\n')
-        print('.--------------------------+--------------------------+---------------------.')
+        if not location in guestbook.keys():
+            print('No entries in this guestbook')
+            return
+
+        if arg.lower() == 'clear':
+            if location in guestbook:
+                del guestbook[location]
+                pickle.dump(guestbook, open(file_guestbook,'wb'))
+                print('Guestbook for %s cleared' % (location))
+                return
+
+        print('Showing the last 5 entries for the %s guestbook\n' % (location))
+        print('+--------------------------+--------------------------+---------------------+')
         print('| ' + '{:25}'.format('Date') + '| ' + '{:25}'.format('Name') + '| ' + '{:20}'.format('IP') + '|')
         print('+--------------------------+--------------------------+---------------------+')
 
-
+        e = 0
         for entry in guestbook[location]:
             gb_entries.append(entry)
+            e += 1
+
+        if e < 1:
+            return
 
         gb_last5 = gb_entries[-5:]
 
@@ -1229,7 +1246,7 @@ class TextAdventureCmd(cmd.Cmd):
 
             entry_text = '| ' + '{:25.24}'.format(entry) + '| ' + '{:25.24}'.format(user) + '| ' + '{:20}'.format(ipad) + '|' 
             print('\n'.join(textwrap.wrap(entry_text, SCREEN_WIDTH)))
-        print('\'--------------------------+--------------------------+---------------------\'')
+        print('+--------------------------+--------------------------+---------------------+')
 
 
     def do_save(self, arg):

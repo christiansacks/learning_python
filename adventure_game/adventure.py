@@ -164,6 +164,7 @@ TYPE = 'type'
 NPC = 'npc'
 GUESTBOOK = 'guestbook'
 NOTICEBOARD = 'noticeboard'
+OTHERPLAYERS = 'otherplayers'
 
 BODY = 'body'
 SHEILD = 'sheild'
@@ -193,6 +194,7 @@ worldRooms = {
         WEST: 'West X Street',
         NOTICEBOARD: True,
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: ['Welcome Sign', 'Fountain']},
     'North Y Street': {
         DESC: 'The northern end of Y Street has really gone down hill. Pot holes are everywhere, as are stray cats, rats, and wombats.',
@@ -201,12 +203,14 @@ worldRooms = {
         SOUTH: 'Town Square',
         DOWN: 'North Y Sewer',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: ['Do Not Take Sign Sign']},
     'Thief Guild': {
         DESC: 'The Thief Guild is a dark den of unprincipled types. You clutch your purse (though several other people here would like to clutch your purse as well).',
         SOUTH: 'West X Street',
         EAST: 'North Y Street',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: ['Lock Picks', 'Silly Glasses']},
     'Bakery': {
         DESC: 'The delightful smell of meat pies fills the air, making you hungry. The baker flashes a grin, as he slides a box marked "Not Human Organs" under a table with his foot.',
@@ -214,18 +218,21 @@ worldRooms = {
         SOUTH: 'East X Street',
         SHOP: ['Meat Pie', 'Donut', 'Bagel', 'Cupcake'],
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: ['Shop Howto']},
     'Stone Mason': {
         DESC: 'The Stone Mason is where you get your gravestone when you die.',
         SOUTH: 'West Masons Alley',
         SHOP: ['Gravestone'],
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: ['Shop Howto']},
     'Hotel Entrance': {
         DESC: 'The only hotel for miles around. You are at the entrance. There isn\'t a bellboy in sight.',
         NORTH: 'Hotel Lobby',
         SOUTH: 'East Masons Alley',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Hotel Lobby': {
         DESC: 'You are in the hotel lobby. It\'s eerily quiet.',
@@ -234,6 +241,7 @@ worldRooms = {
         EAST: 'Hotel Reception',
         SOUTH: 'Hotel Entrance',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Elevator 1': {
         DESC: 'Elevator on the 1st floor.',
@@ -241,18 +249,21 @@ worldRooms = {
         UP: 'Elevator 2',
         DOWN: 'Elevator B1',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Hotel Restaurant': {
         DESC: 'You are in the hotel restaurant, looks like it\'s been closed for decades.',
         EAST: 'Hotel Lobby',
         SHOP: ['Meat Pie', 'Donut', 'Continental Breakfast', 'Cheese Board'],
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: ['Shop Howto']},
     'Hotel Reception': {
         DESC: 'You are in the hotel reception, Strange, there isn\'t anyone here. There is a guestbook on the desk, would you like to sign it?',
         WEST: 'Hotel Lobby',
         GUESTBOOK: True,
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Elevator 2': {
         DESC: 'Elevator on the 2nd floor.',
@@ -262,16 +273,19 @@ worldRooms = {
         UP: 'Elevator 3',
         DOWN: 'Elevator 1',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Ice Machine 2': {
         DESC: 'Ice Machine room on the 2nd floor.',
         WEST: 'Elevator 2',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Laundry Room 2': {
         DESC: 'Laundry room on the 2nd floor.',
         EAST: 'Elevator 2',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Rooms 201-202': {
         DESC: '',
@@ -280,6 +294,7 @@ worldRooms = {
         NORTH: 'Elevator 2',
         SOUTH: 'Rooms 203-204',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Rooms 203-204': {
         DESC: '',
@@ -288,6 +303,7 @@ worldRooms = {
         NORTH: 'Rooms 201-202',
         SOUTH: 'Rooms 205-206',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Rooms 205-206': {
         DESC: '',
@@ -296,6 +312,7 @@ worldRooms = {
         NORTH: 'Rooms 203-204',
         SOUTH: 'Rooms 207-208',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Rooms 207-208': {
         DESC: '',
@@ -303,46 +320,55 @@ worldRooms = {
         EAST: 'Room 208',
         NORTH: 'Rooms 205-206',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Room 201': {
         DESC: 'Room 201.',
         EAST: 'Rooms 201-202',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Room 202': {
         DESC: 'Room 202.',
         WEST: 'Rooms 201-202',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Room 203': {
         DESC: 'Room 203.',
         EAST: 'Rooms 203-204',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Room 204': {
         DESC: 'Room 204.',
         WEST: 'Rooms 203-204',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Room 205': {
         DESC: 'Room 205.',
         EAST: 'Rooms 205-206',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Room 206': {
         DESC: 'Room 206.',
         WEST: 'Rooms 205-206',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Room 207': {
         DESC: 'Room 207.',
         EAST: 'Rooms 207-208',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Room 208': {
         DESC: 'Room 208.',
         WEST: 'Rooms 207-208',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Elevator 3': {
         DESC: 'Elevator on the 3rd floor.',
@@ -351,16 +377,19 @@ worldRooms = {
         SOUTH: 'Rooms 301-302',
         DOWN: 'Elevator 2',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Ice Machine 3': {
         DESC: 'Ice Machine room on the 3rd floor.',
         WEST: 'Elevator 3',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Laundry Room 3': {
         DESC: 'Laundry room on the 3rd floor.',
         EAST: 'Elevator 3',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Rooms 301-302': {
         DESC: '',
@@ -369,6 +398,7 @@ worldRooms = {
         NORTH: 'Elevator 3',
         SOUTH: 'Rooms 303-304',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Rooms 303-304': {
         DESC: '',
@@ -377,6 +407,7 @@ worldRooms = {
         NORTH: 'Rooms 301-302',
         SOUTH: 'Rooms 305-306',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Rooms 305-306': {
         DESC: '',
@@ -385,6 +416,7 @@ worldRooms = {
         NORTH: 'Rooms 303-304',
         SOUTH: 'Rooms 307-308',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Rooms 307-308': {
         DESC: '',
@@ -392,57 +424,68 @@ worldRooms = {
         EAST: 'Room 308',
         NORTH: 'Rooms 305-306',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Room 301': {
         DESC: 'Room 301.',
         EAST: 'Rooms 301-302',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Room 302': {
         DESC: 'Room 302.',
         WEST: 'Rooms 301-302',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Room 303': {
         DESC: 'Room 303.',
         EAST: 'Rooms 303-304',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Room 304': {
         DESC: 'Room 304.',
         WEST: 'Rooms 303-304',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Room 305': {
         DESC: 'Room 305.',
         EAST: 'Rooms 305-306',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Room 306': {
         DESC: 'Room 306.',
         WEST: 'Rooms 305-306',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Room 307': {
         DESC: 'Room 307.',
         EAST: 'Rooms 307-308',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Room 308': {
         DESC: 'Room 308.',
         WEST: 'Rooms 307-308',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Elevator B1': {
         DESC: 'Elevator on the Upper Basement (B1) floor.',
         UP: 'Elevator 1',
         DOWN: 'Elevator B2',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Elevator B2': {
         DESC: 'Elevator on the Lower Basement (B2) floor.',
         UP: 'Elevator B1',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'West Masons Alley': {
         DESC: '',
@@ -450,12 +493,14 @@ worldRooms = {
         EAST: 'East Masons Alley',
         WEST: 'East X Street',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'East Masons Alley': {
         DESC: '',
         NORTH: 'Hotel Entrance',
         WEST: 'West Masons Alley',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'West X Street': {
         DESC: 'West X Street is the rich section of town. So rich, they paved the streets with gold. This probably was not a good idea. The thief guild opened up the next day.',
@@ -464,12 +509,14 @@ worldRooms = {
         SOUTH: 'Blacksmith',
         WEST: 'Used Anvils Store',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Used Anvils Store': {
         DESC: 'The anvil store has anvils of all types and sizes, each previously-owned but still in servicable condition. However, due to a bug in the way this game is designed, you can buy anvils like any other item and walk around, but if you drop them they cannot be picked up since their TAKEABLE value is set to False. The code should be changed so that it\'s not possible for shops to sell items with TAKEABLE set to False.',
         EAST: 'West X Street',
         SHOP: ['Anvil'],
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: ['Shop Howto', 'Anvil', 'Anvil', 'Anvil', 'Anvil']},
     'East X Street': {
         DESC: 'East X Street. It\'s like X Street, except East.',
@@ -478,6 +525,7 @@ worldRooms = {
         WEST: 'Town Square',
         SOUTH: 'Wizard Tower',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Blacksmith': {
         DESC: 'The blacksmith loudly hammers a new sword over her anvil. Swords, axes, butter knives all line the walls of her workshop, available for a price.',
@@ -485,6 +533,7 @@ worldRooms = {
         EAST: 'South Y Street',
         SHOP: ['Sword', 'Great Sword', 'War Axe', 'Chainmail T-Shirt'],
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: ['Anvil', 'Shop Howto']},
     'South Y Street': {
         DESC: 'The Christmas Carolers of South Y Street are famous for all legally changing their name to Carol. They are also famous for singing year-round, in heavy fur coats and wool mittens, even in the summer. That\'s dedication to their craft!',
@@ -492,18 +541,21 @@ worldRooms = {
         WEST: 'Blacksmith',
         DOWN: 'South Y Sewer',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Wizard Tower': {
         DESC: 'Zanny magical antics are afoot in the world-famous Wizard Tower. Cauldrons bubble, rats talk, and books float midair in this center of magical discovery.',
         NORTH: 'East X Street',
         UP: 'Observation Deck',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: ['Crystal Ball', 'Floating Book', 'Floating Book']},
     'Observation Deck': {
         DESC: 'You can see the entire town from the top of the Wizard Tower. Everybody looks like ants, especially the people transformed into ants by the wizards of the tower!',
         DOWN: 'Wizard Tower',
         UP: 'Magical Escalator to Nowhere',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: ['Telescope']},
     'Magical Escalator to Nowhere': {
         DESC: 'No matter how much you climb the escalator, it doesn\'t seem to be getting you anywhere. You can see a visitors guest book.',
@@ -511,6 +563,7 @@ worldRooms = {
         DOWN: 'Observation Deck',
         GUESTBOOK: True,
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'North Y Sewer': {
         DESC: 'The sewer in North Y Street is overrun with rats and sewage. This had better be worth it.',
@@ -519,12 +572,14 @@ worldRooms = {
         WEST: 'Thief Guild Sewer',
         SOUTH: 'Town Square Sewer',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Town Square Sewer': {
         DESC: 'The sewer underneath the town square.',
         NORTH: 'North Y Sewer',
         SOUTH: 'South Y Sewer',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'South Y Sewer': {
         DESC: 'The sewer in South Y Street is relatively clean for a sewer. It looks like it has been well looked after, and there are signs that this has been used for things other than just waste.',
@@ -533,32 +588,38 @@ worldRooms = {
         WEST: 'Blacksmith Sewer',
         EAST: 'Wizard Tower Sewer',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Bakery Sewer': {
         DESC: 'The sewer beneath the Bakery. Is that bread you can smell?',
         EAST: 'Stone Mason Sewer',
         WEST: 'North Y Sewer',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Stone Mason Sewer': {
         DESC: 'The sewer beneath the Stone Mason. Shhhh, there\'s a ghost here.',
         WEST: 'Bakery Sewer',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Thief Guild Sewer': {
         DESC: 'The sewer beneath the Thief Guild building. Unsurprisingly there\'s a distinct chance this area has been looted already.',
         EAST: 'North Y Sewer',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Blacksmith Sewer': {
         DESC: 'The sewer beneath the Blacksmith building. The blacksmith definitely has enough iron in his diet.',
         EAST: 'South Y Sewer',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     'Wizard Tower Sewer': {
         DESC: 'The sewer beneath the Wizard Tower. Even this brown sludge smells magical.',
         WEST: 'South Y Sewer',
         NPC: [],
+        OTHERPLAYERS: [],
         GROUND: []},
     }
 
@@ -794,6 +855,8 @@ playerStats = {
     'Money': 10,
 }
 
+currentPlayers = {}
+
 NPCs = {
     'Dave': {
         'Inventory': ['Meat Pie', 'Donut', 'Sword'],
@@ -982,6 +1045,39 @@ def placeRandoms():
     print()
 
 
+def updatePlayers():
+    """Add player to currentPlayers dictionary"""
+
+    global currentPlayers
+    global playerStats
+    global inventory
+
+    file_players = '%s%s.dat' % (SAVES_FOLDER, 'players')
+    if os.path.exists(file_players) == False:
+        currentPlayers[playerStats['Player Name']] = {'Inventory': inventory, 'Health': playerStats['Health'], 'XP': playerStats['XP'], 'HP': playerStats['HP'], 'Money': playerStats['Money'], 'Location': playerStats['Location']}
+        pickle.dump(currentPlayers, open(file_players, 'wb'))
+    else:
+        currentPlayers = pickle.load(open(file_players, 'rb'))
+        currentPlayers[playerStats['Player Name']] = {'Inventory': inventory, 'Health': playerStats['Health'], 'XP': playerStats['XP'], 'HP': playerStats['HP'], 'Money': playerStats['Money'], 'Location': playerStats['Location']}
+        pickle.dump(currentPlayers, open(file_players, 'wb'))
+
+    for room in worldRooms:
+        worldRooms[room][OTHERPLAYERS] = []
+
+    for player in currentPlayers:
+        worldRooms[currentPlayers[player]['Location']][OTHERPLAYERS].append(player)
+
+    playerStats['Health'] = currentPlayers[player]['Health']
+
+def removePlayer():
+    worldRooms[playerStats['Location']][OTHERPLAYERS].remove(playerStats['Player Name'])
+    del currentPlayers[playerStats['Player Name']]
+
+    file_players = '%s%s.dat' % (SAVES_FOLDER, 'players')
+    pickle.dump(currentPlayers, open(file_players, 'wb'))
+
+
+
 def displayLocation(loc):
     """A helper function for displaying an area's description and exits."""
     # Print the room name.
@@ -1004,7 +1100,18 @@ def displayLocation(loc):
         if NPCs[npc]['Health'] > 0:
             print('%s%s%s is nearby.' % (CYAN, npc, WHITE))
         else:
-            print('%s\'s body is nearby.' % (npc))
+            print('%s%s%s\'s body is nearby.' % (CYAN, npc, WHITE))
+
+    # Print any Player here
+    updatePlayers()
+    players = worldRooms[loc][OTHERPLAYERS]
+
+    for player in players:
+        if not player == playerStats['Player Name']:
+            if currentPlayers[player]['Health'] > 0:
+                print('%s%s%s is nearby.' % (YELLOW, player, WHITE))
+            else:
+                print('%s%s%s\'s body is nearby.' % (YELLOW, player, WHITE))
 
     # Print all the exits.
     exits = []
@@ -1029,6 +1136,7 @@ def moveDirection(direction):
     global location
 
     if direction in worldRooms[location]:
+        worldRooms[location][OTHERPLAYERS].remove(playerStats['Player Name'])
         print('You move to the %s.' % direction)
         location = worldRooms[location][direction]
         displayLocation(location)
@@ -1039,7 +1147,7 @@ def moveDirection(direction):
         playerStats['Health'] -= 1
 
     playerStats['Location'] = location
-
+    updatePlayers()
 
 def getAllDescWords(itemList):
     """Returns a list of "description words" for each item named in itemList."""
@@ -1473,14 +1581,31 @@ class TextAdventureCmd(cmd.Cmd):
 
     def do_hit(self, arg):
         who = arg
+        who_exists = False
+        who_hitting = ''
 
         if playerStats['Health'] < 1:
             print('You don\'t have enough health to do that.')
             return None
-            
-        if NPCs[who]['Health'] < 1:
-            print('You can\'t fight a dead person.')
-            return None
+
+        if who in NPCs.keys():
+            who_exists = True
+            who_hitting = 'npc'
+            if NPCs[who]['Health'] < 1:
+                print('You can\'t fight a dead person.')
+                return None
+
+
+        if who in currentPlayers.keys():
+            who_exists = True
+            who_hitting = 'player'
+            if currentPlayers[who]['Health'] < 1:
+                print('You can\'t fight a dead person.')
+                return None
+
+        if who_exists == False:
+            print('No one to hit')
+            return
 
         weaponsList = {}
         npcWeaponsList = {}
@@ -1488,75 +1613,119 @@ class TextAdventureCmd(cmd.Cmd):
         swordCount = 0
         waraxeCount = 0
         weaponCount = 0
-        
-        npcSwordCount = 0
-        npcWarAxeCount = 0
-        npcWeaponCount = 0
 
-        for item in inventory:
-            if item == 'Sword' or item == 'Great Sword':
-                swordCount += 1
-                weaponsList.__setitem__(item, worldItems[item][DAMAGE])
-            if item == 'War Axe':
-                waraxeCount += 1
-                weaponsList.__setitem__(item, worldItems[item][DAMAGE])
-                
-        for npcItem in NPCs[who]['Inventory']:
-            if npcItem == 'Sword' or npcItem == 'Great Sword':
-                npcSwordCount += 1
-                npcWeaponsList.__setitem__(npcItem, worldItems[npcItem][DAMAGE])
-            if npcItem == 'War Axe':
-                npcWarAxeCount += 1
-                npcWeaponsList.__setitem__(npcItem, worldItems[npcItem][DAMAGE])
+        if who_hitting == 'npc':
+            npcSwordCount = 0
+            npcWarAxeCount = 0
+            npcWeaponCount = 0
 
-        weaponCount = swordCount + waraxeCount
-        npcWeaponCount = npcSwordCount + npcWarAxeCount
+            for item in inventory:
+                if item == 'Sword' or item == 'Great Sword':
+                    swordCount += 1
+                    weaponsList.__setitem__(item, worldItems[item][DAMAGE])
+                if item == 'War Axe':
+                    waraxeCount += 1
+                    weaponsList.__setitem__(item, worldItems[item][DAMAGE])
 
-        bestWeapon = max(weaponsList, key=lambda key: weaponsList[key])
-        bestWeaponDamage = worldItems[bestWeapon][DAMAGE]
-        
-        npcBestWeapon = max(npcWeaponsList, key=lambda key: npcWeaponsList[key])
-        npcBestWeaponDamage = worldItems[npcBestWeapon][DAMAGE]
-        
-                
-        if weaponCount > 0:
-            canFight = True
-        else:
-            canFight = False
+            for npcItem in NPCs[who]['Inventory']:
+                if npcItem == 'Sword' or npcItem == 'Great Sword':
+                    npcSwordCount += 1
+                    npcWeaponsList.__setitem__(npcItem, worldItems[npcItem][DAMAGE])
+                if npcItem == 'War Axe':
+                    npcWarAxeCount += 1
+                    npcWeaponsList.__setitem__(npcItem, worldItems[npcItem][DAMAGE])
 
-        if canFight == True:
-            if who in worldRooms[location][NPC]:
-                if NPCs[who]['Health'] > 0:
-                    dam = random.randint(0, worldItems[bestWeapon][DAMAGE]) # - random.randint(0, NPCs[who]['HP']))
-                    if godMode == False:
-                        pdam = random.randint(0, (worldItems[npcBestWeapon][DAMAGE])) # - random.randint(0, playerStats['HP']))
-                    else:
-                        pdam = 0
-                    if dam > NPCs[who]['Health']:
-                        dam = NPCs[who]['Health']
-                        playerStats['XP'] += NPCs[who]['XP']
-                        playerStats['HP'] += NPCs[who]['HP']
-                        NPCs[who]['XP'] = 0
-                        NPCs[who]['HP'] = 0
-                    NPCs[who]['Health'] -= dam 
-                    if NPCs[who]['Health'] > 0:
-                        print('You hit %s with a %s (MAX damage: %s), causing %d damage.\n%s now has %d health.' % (who, bestWeapon, bestWeaponDamage, dam, who, NPCs[who]['Health']))
-                    else:
-                        print('You killed %s!' % (who))
-                    if NPCs[who]['Health'] > 0:
-                        if pdam > playerStats['Health']:
-                            pdam = playerStats['Health']
-                        if pdam > playerStats['HP']:
-                            playerStats['Health'] -= pdam - playerStats['HP']
-                        print('%s hit you with a %s causing %d damage.' % (who, npcBestWeapon, pdam))
-                else:
-                    print('%s is dead.' % (who))
+            weaponCount = swordCount + waraxeCount
+            npcWeaponCount = npcSwordCount + npcWarAxeCount
+
+            bestWeapon = max(weaponsList, key=lambda key: weaponsList[key])
+            bestWeaponDamage = worldItems[bestWeapon][DAMAGE]
+
+            npcBestWeapon = max(npcWeaponsList, key=lambda key: npcWeaponsList[key])
+            npcBestWeaponDamage = worldItems[npcBestWeapon][DAMAGE]
+
+            if weaponCount > 0:
+                canFight = True
             else:
-                print('%s isn\'t nearby.' % (who))
-        else:
-            print('You have nothing to hit %s with.' % (who))
+                canFight = False
 
-        if not godMode: 
+            if canFight == True:
+                if who in worldRooms[location][NPC]:
+                    if NPCs[who]['Health'] > 0:
+                        dam = random.randint(0, worldItems[bestWeapon][DAMAGE]) # - random.randint(0, NPCs[who]['HP']))
+                        if godMode == False:
+                            pdam = random.randint(0, (worldItems[npcBestWeapon][DAMAGE])) # - random.randint(0, playerStats['HP']))
+                        else:
+                            pdam = 0
+                        if dam > NPCs[who]['Health']:
+                            dam = NPCs[who]['Health']
+                            playerStats['XP'] += NPCs[who]['XP']
+                            playerStats['HP'] += NPCs[who]['HP']
+                            NPCs[who]['XP'] = 0
+                            NPCs[who]['HP'] = 0
+                        NPCs[who]['Health'] -= dam 
+                        if NPCs[who]['Health'] > 0:
+                            print('You hit %s with a %s (MAX damage: %s), causing %d damage.\n%s now has %d health.' % (who, bestWeapon, bestWeaponDamage, dam, who, NPCs[who]['Health']))
+                        else:
+                            print('You killed %s!' % (who))
+                        if NPCs[who]['Health'] > 0:
+                            if pdam > playerStats['Health']:
+                                pdam = playerStats['Health']
+                            if pdam > playerStats['HP']:
+                                playerStats['Health'] -= pdam - playerStats['HP']
+                            print('%s hit you with a %s causing %d damage.' % (who, npcBestWeapon, pdam))
+                    else:
+                        print('%s is dead.' % (who))
+                else:
+                    print('%s isn\'t nearby.' % (who))
+            else:
+                print('You have nothing to hit %s with.' % (who))
+
+        if who_hitting == 'player':
+            print('Can\'t hit players in this version')
+            return
+
+            for item in inventory:
+                if item == 'Sword' or item == 'Great Sword':
+                    swordCount += 1
+                    weaponsList.__setitem__(item, worldItems[item][DAMAGE])
+                if item == 'War Axe':
+                    waraxeCount += 1
+                    weaponsList.__setitem__(item, worldItems[item][DAMAGE])
+
+            weaponCount = swordCount + waraxeCount
+            bestWeapon = max(weaponsList, key=lambda key: weaponsList[key])
+            bestWeaponDamage = worldItems[bestWeapon][DAMAGE]
+
+            if weaponCount > 0:
+                canFight = True
+            else:
+                canFight = False
+
+            if canFight == True:
+                if who in worldRooms[location][OTHERPLAYERS]:
+                    if currentPlayers[who]['Health'] > 0:
+                        dam = random.randint(0, worldItems[bestWeapon][DAMAGE]) # - random.randint(0, NPCs[who]['HP']))
+                        if dam > currentPlayers[who]['Health']:
+                            dam = currentPlayers[who]['Health']
+                            playerStats['XP'] += currentPlayers[who]['XP']
+                            playerStats['HP'] += currentPlayers[who]['HP']
+                            currentPlayers[who]['XP'] = 0
+                            currentPlayers[who]['HP'] = 0
+                        currentPlayers[who]['Health'] -= dam 
+                        if currentPlayers[who]['Health'] > 0:
+                            print('You hit %s with a %s (MAX damage: %s), causing %d damage.\n%s now has %d health.' % (who, bestWeapon, bestWeaponDamage, dam, who, currentPlayers[who]['Health']))
+                        else:
+                            print('You killed %s!' % (who))
+                    else:
+                        print('%s is dead.' % (who))
+                else:
+                    print('%s isn\'t nearby.' % (who))
+            else:
+                print('You have nothing to hit %s with.' % (who))
+
+
+        if not godMode:
             playerStats['Health'] -= 1
             updatePrompt()
 
@@ -2117,6 +2286,7 @@ if __name__ == '__main__':
     print('(Type "help" for commands.)')
     print()
     placeRandoms()
+    updatePlayers()
     displayLocation(location)
     example = ThreadingExample()
     TextAdventureCmd().cmdloop()
@@ -2124,3 +2294,4 @@ if __name__ == '__main__':
 
     # Deinitialize 'colorama'
     colorama.deinit()
+    removePlayer()

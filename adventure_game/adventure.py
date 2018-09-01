@@ -1157,7 +1157,7 @@ class TextAdventureCmd(cmd.Cmd):
     def do_signguestbook(self, arg):
         """Signs the guestbook if there's one to sign"""
 
-        if worldRooms[location].get(GUESTBOOK, True) == False:
+        if worldRooms[location].get(GUESTBOOK) == None:
             print('You can\'t do that here')
             return
 
@@ -1199,7 +1199,8 @@ class TextAdventureCmd(cmd.Cmd):
 
     def do_readguestbook(self, arg):
         """Shows the entries in a guestbook"""
-        if worldRooms[location].get(GUESTBOOK, True) == False:
+
+        if worldRooms[location].get(GUESTBOOK) == None:
             print('You can\'t do that here')
             return
 

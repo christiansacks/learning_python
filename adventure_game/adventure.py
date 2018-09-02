@@ -1208,63 +1208,100 @@ def checkNPCs():
         else:
             return False
 
-class ThreadingExample(object):
-    """ Threading example class
-    The run() method will be started and it will run in the background
-    until the application exits.
-    """
+def guestbookRead(arg):
+        """Shows the entries in a guestbook"""
 
-    def __init__(self, interval=1):
-        """ Constructor
-        :type interval: int
-        :param interval: Check interval, in seconds
+        if worldRooms[location].get(GUESTBOOK) == None:
+            print('You can\'t do that here')
+            return
+
+        file_guestbook = '%s%s.dat' % (SAVES_FOLDER, 'guestbook')
+        if os.path.exists(file_guestbook) == False:
+            print('No previous entries found')
+            return
+
+        guestbook = {}
+        gb_entries = []
+        file_guestbook = '%s%s.dat' % (SAVES_FOLDER, 'guestbook')
+        guestbook = pickle.load(open(file_guestbook, 'rb'))
+
+        if not location in guestbook.keys():
+            print('No entries in this guestbook')
+            return
+
+        if arg.lower() == 'clear':
+            if location in guestbook:
+                del guestbook[location]
+                pickle.dump(guestbook, open(file_guestbook,'wb'))
+                print('Guestbook for %s cleared' % (location))
+                return
+
+        print('Showing the last 5 entries for the %s guestbook\n' % (location))
+        print('+--------------------------+--------------------------+---------------------+')
+        print('| ' + '{:25}'.format('Date') + '| ' + '{:25}'.format('Name') + '| ' + '{:20}'.format('IP') + '|')
+        print('+--------------------------+--------------------------+---------------------+')
+
+        e = 0
+        for entry in guestbook[location]:
+            gb_entries.append(entry)
+            e += 1
+
+        if e < 1:
+            return
+
+        gb_last5 = gb_entries[-5:]
+
+        for entry in gb_last5:
+            user = guestbook[location][entry]['NAME']
+            node = guestbook[location][entry]['NODE']
+            ipad = guestbook[location][entry]['IPAD']
+
+            entry_text = '| ' + '{:25.24}'.format(entry) + '| ' + '{:25.24}'.format(user) + '| ' + '{:20}'.format(ipad) + '|' 
+            print('\n'.join(textwrap.wrap(entry_text, SCREEN_WIDTH)))
+        print('+--------------------------+--------------------------+---------------------+')
+
+def guestbookSign(arg):
+        """Signs the guestbook if there's one to sign"""
+
+        if worldRooms[location].get(GUESTBOOK) == None:
+            print('You can\'t do that here')
+            return
+
+        guestbook = {}
+
         """
-        self.interval = interval
+        guestbook = {
+            'LOCATION': {
+                'timestamp': {
+                    NAME: USERNAME,
+                    NODE: NODENUMB,
+                    IPAD: USERIPAD},
+            },
+        }
+        """
 
-        thread = threading.Thread(target=self.run, args=())
-        thread.daemon = True                            # Daemonize thread
-        thread.start()                                  # Start the execution
+        file_guestbook = '%s%s.dat' % (SAVES_FOLDER, 'guestbook')
 
-    def run(self):
-        """ Method that runs forever """
-        global gameSeconds
-        global gameMinutes
-        global gameHours
+        if os.path.exists(file_guestbook) == False:
+            print('No previous entries found')
+            guestbook = {location: {}}
+        else:
+            guestbook = pickle.load(open(file_guestbook,'rb'))
 
-        while True:
-            # Do something
-            time.sleep(self.interval)
-            if gameSeconds < 59:
-                gameSeconds += 1
-            else:
-                gameSeconds = 0
-                if gameMinutes < 59:
-                    gameMinutes += 1
-                else:
-                    gameMinutes = 0
-                    gameHours += 1
-            
-            updatePrompt()
-            
+        ts = time.time()
+        st = datetime.datetime.fromtimestamp(ts).strftime('%d-%m-%Y %H:%M:%S')
 
-class TextAdventureCmd(cmd.Cmd):
-    prompt = '\n%s[Health:%s%d%s][Money:%s%d%s]\n> %s' % (YELLOW, GREEN, playerStats['Health'], YELLOW, GREEN, playerStats['Money'], YELLOW, WHITE)
-    #updatePrompt()
-    
-    # The default() method is called when none of the other do_*() command methods match.
-    def default(self, arg):
-        print('I do not understand that command. Type "help" for a list of commands.')
+        if not location in guestbook.keys():
+            guestbook[location] = {}
 
-    # A very simple "quit" command to terminate the program:
-    def do_quit(self, arg):
-        """Quit the game."""
-        return True # this exits the Cmd application loop in TextAdventureCmd.cmdloop()
+        guestbook[location][st] = {'NAME': USERNAME, 'NODE': NODENUMB, 'IPAD': USERIPAD}
+        #os.system('clear')
+        pickle.dump(guestbook, open(file_guestbook,'wb'))
+        print('Successfully added to the guestbook.\n')
+        guestbook = {}
+        guestbookRead('read')
 
-    def do_checknpcs(self, arg):
-        """Check how many NPC's are alive and how many are dead"""
-        print(checkNPCs())
-
-    def do_readnoticeboard(self, arg):
+def noticeboardRead(arg):
         """Reads a notice board"""
 
         """
@@ -1329,7 +1366,7 @@ class TextAdventureCmd(cmd.Cmd):
             print('\n'.join(textwrap.wrap(entry_text, SCREEN_WIDTH)))
         print('+---------------------+----------------+--------------------------------------+')
 
-    def do_signnoticeboard(self, arg):
+def noticeboardSign(arg):
         """Signs the notice board if there's one to sign"""
 
         if worldRooms[location].get(NOTICEBOARD) == None:
@@ -1373,110 +1410,97 @@ class TextAdventureCmd(cmd.Cmd):
             if check.lower() == 'y': is_ok = True
 
         noticeboard[location][st] = {'NAME': USERNAME, 'NODE': NODENUMB, 'IPAD': USERIPAD, 'UMSG': USERMESSAGE}
-        os.system('clear')
-        #print(location)
-        #print(worldRooms[location].get(GUESTBOOK))
-        #print(guestbook)
+        #os.system('clear')
         pickle.dump(noticeboard, open(file_noticeboard,'wb'))
-        print('Successfully added to the notice board')
-        guestbook = {}
+        print('Successfully added to the notice board.\n')
+        noticeboard = {}
+        noticeboardRead('read')
 
+class ThreadingExample(object):
+    """ Threading example class
+    The run() method will be started and it will run in the background
+    until the application exits.
+    """
 
-    def do_signguestbook(self, arg):
-        """Signs the guestbook if there's one to sign"""
-
-        if worldRooms[location].get(GUESTBOOK) == None:
-            print('You can\'t do that here')
-            return
-
-        guestbook = {}
-
+    def __init__(self, interval=1):
+        """ Constructor
+        :type interval: int
+        :param interval: Check interval, in seconds
         """
-        guestbook = {
-            'LOCATION': {
-                'timestamp': {
-                    NAME: USERNAME,
-                    NODE: NODENUMB,
-                    IPAD: USERIPAD},
-            },
-        }
-        """
+        self.interval = interval
 
-        file_guestbook = '%s%s.dat' % (SAVES_FOLDER, 'guestbook')
+        thread = threading.Thread(target=self.run, args=())
+        thread.daemon = True                            # Daemonize thread
+        thread.start()                                  # Start the execution
 
-        if os.path.exists(file_guestbook) == False:
-            print('No previous entries found')
-            guestbook = {location: {}}
-        else:
-            guestbook = pickle.load(open(file_guestbook,'rb'))
+    def run(self):
+        """ Method that runs forever """
+        global gameSeconds
+        global gameMinutes
+        global gameHours
 
-        ts = time.time()
-        st = datetime.datetime.fromtimestamp(ts).strftime('%d-%m-%Y %H:%M:%S')
+        while True:
+            # Do something
+            time.sleep(self.interval)
+            if gameSeconds < 59:
+                gameSeconds += 1
+            else:
+                gameSeconds = 0
+                if gameMinutes < 59:
+                    gameMinutes += 1
+                else:
+                    gameMinutes = 0
+                    gameHours += 1
+            
+            updatePrompt()
+            
 
-        if not location in guestbook.keys():
-            guestbook[location] = {}
+class TextAdventureCmd(cmd.Cmd):
+    prompt = '\n%s[Health:%s%d%s][Money:%s%d%s]\n> %s' % (YELLOW, GREEN, playerStats['Health'], YELLOW, GREEN, playerStats['Money'], YELLOW, WHITE)
+    #updatePrompt()
+    
+    # The default() method is called when none of the other do_*() command methods match.
+    def default(self, arg):
+        print('I do not understand that command. Type "help" for a list of commands.')
 
-        guestbook[location][st] = {'NAME': USERNAME, 'NODE': NODENUMB, 'IPAD': USERIPAD}
-        os.system('clear')
-        #print(location)
-        #print(worldRooms[location].get(GUESTBOOK))
-        #print(guestbook)
-        pickle.dump(guestbook, open(file_guestbook,'wb'))
-        print('Successfully added to the guestbook')
-        guestbook = {}
+    # A very simple "quit" command to terminate the program:
+    def do_quit(self, arg):
+        """Quit the game."""
+        return True # this exits the Cmd application loop in TextAdventureCmd.cmdloop()
 
-    def do_readguestbook(self, arg):
-        """Shows the entries in a guestbook"""
+    def do_checknpcs(self, arg):
+        """Check how many NPC's are alive and how many are dead"""
+        print(checkNPCs())
 
-        if worldRooms[location].get(GUESTBOOK) == None:
-            print('You can\'t do that here')
-            return
+    def do_guestbook(self, arg):
+        """Do something with a guestbook
+Usage: guestbook {read|sign}
+where read is to read a guestbook and sign is to sign a guestbook"""
+        if arg.lower() == "read":
+            guestbookRead(arg)
+        if arg.lower() == "sign":
+            guestbookSign(arg)
+        if arg == "CLEAR":
+            guestbookRead('clear')
 
-        file_guestbook = '%s%s.dat' % (SAVES_FOLDER, 'guestbook')
-        if os.path.exists(file_guestbook) == False:
-            print('No previous entries found')
-            return
+    def complete_guestbook(self, text, line, begidx, endidx):
+        possibleItems = ['read', 'sign']
+        return list(set(possibleItems))
 
-        guestbook = {}
-        gb_entries = []
-        file_guestbook = '%s%s.dat' % (SAVES_FOLDER, 'guestbook')
-        guestbook = pickle.load(open(file_guestbook, 'rb'))
+    def do_noticeboard(self, arg):
+        """Do something with a notice board
+Usage: noticeboard {read|sign}
+where read is to read a noticeboard and sign is to sign a noticeboard"""
+        if arg.lower() == "read":
+            noticeboardRead(arg)
+        if arg.lower() == "sign":
+            noticeboardSign(arg)
+        if arg == "CLEAR":
+            noticeboardRead('clear')
 
-        if not location in guestbook.keys():
-            print('No entries in this guestbook')
-            return
-
-        if arg.lower() == 'clear':
-            if location in guestbook:
-                del guestbook[location]
-                pickle.dump(guestbook, open(file_guestbook,'wb'))
-                print('Guestbook for %s cleared' % (location))
-                return
-
-        print('Showing the last 5 entries for the %s guestbook\n' % (location))
-        print('+--------------------------+--------------------------+---------------------+')
-        print('| ' + '{:25}'.format('Date') + '| ' + '{:25}'.format('Name') + '| ' + '{:20}'.format('IP') + '|')
-        print('+--------------------------+--------------------------+---------------------+')
-
-        e = 0
-        for entry in guestbook[location]:
-            gb_entries.append(entry)
-            e += 1
-
-        if e < 1:
-            return
-
-        gb_last5 = gb_entries[-5:]
-
-        for entry in gb_last5:
-            user = guestbook[location][entry]['NAME']
-            node = guestbook[location][entry]['NODE']
-            ipad = guestbook[location][entry]['IPAD']
-
-            entry_text = '| ' + '{:25.24}'.format(entry) + '| ' + '{:25.24}'.format(user) + '| ' + '{:20}'.format(ipad) + '|' 
-            print('\n'.join(textwrap.wrap(entry_text, SCREEN_WIDTH)))
-        print('+--------------------------+--------------------------+---------------------+')
-
+    def complete_noticeboard(self, text, line, begidx, endidx):
+        possibleItems = ['read', 'sign']
+        return list(set(possibleItems))
 
     def do_save(self, arg):
         """Save current player's stats, location, any items carried, and state of any items and npc's left in the world"""
@@ -1724,6 +1748,7 @@ class TextAdventureCmd(cmd.Cmd):
             else:
                 print('You have nothing to hit %s with.' % (who))
 
+            updatePlayers()
 
         if not godMode:
             playerStats['Health'] -= 1

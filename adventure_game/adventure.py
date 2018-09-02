@@ -141,6 +141,9 @@ else:
 
 SAVES_FOLDER = '/mystic/scripts/adventure_saves/'
 
+if not os.path.exists(SAVES_FOLDER):
+        os.makedirs(SAVES_FOLDER)
+
 DESC = 'desc'
 NORTH = 'north'
 SOUTH = 'south'

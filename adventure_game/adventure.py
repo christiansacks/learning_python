@@ -128,7 +128,7 @@ name will exist. If we mistyped the strings, the bugs that it produces
 would be harder to find.
 """
 
-import os, cmd, textwrap, time, threading, sys, random, colorama, pickle, datetime
+import sys, os, cmd, textwrap, time, threading, sys, random, colorama, pickle, datetime
 
 if len(sys.argv) < 4:
     USERNAME = 'Unknown User'
@@ -179,6 +179,7 @@ POINTS = 'points'
 
 SCREEN_WIDTH = 80
 location = ''
+status = ''
 
 RED = '\033[1;31;1m'
 GREEN = '\033[1;32;1m'
@@ -1044,7 +1045,6 @@ def placeRandoms():
             npc = random.choice(randNpcs)
             randNpcs.remove(npc)
             worldRooms[room][NPC].append(npc)
-#             print('%s placed in %s' % (npc, room))
     print()
 
 
@@ -1054,6 +1054,13 @@ def updatePlayers():
     global currentPlayers
     global playerStats
     global inventory
+    global USERNAME
+    
+    playerHit_file = '%s%s_damage.sem' % (SAVES_FOLDER, playerStats['Player Name'])
+    if os.path.exists(playerHit_file) == True:
+        playerStats['Health'] = pickle.load(open(playerHit_file, 'rb'))
+        os.remove(playerHit_file)
+        print('\n%sYou were just hit!%s\n' % (RED, WHITE))
 
     file_players = '%s%s.dat' % (SAVES_FOLDER, 'players')
     if os.path.exists(file_players) == False:
@@ -1061,6 +1068,9 @@ def updatePlayers():
         pickle.dump(currentPlayers, open(file_players, 'wb'))
     else:
         currentPlayers = pickle.load(open(file_players, 'rb'))
+        #print(playerStats)
+        #print(currentPlayers)
+        #playerStats['Health'] = int(currentPlayers[USERNAME]['Health'])
         currentPlayers[playerStats['Player Name']] = {'Inventory': inventory, 'Health': playerStats['Health'], 'XP': playerStats['XP'], 'HP': playerStats['HP'], 'Money': playerStats['Money'], 'Location': playerStats['Location']}
         pickle.dump(currentPlayers, open(file_players, 'wb'))
 
@@ -1070,10 +1080,17 @@ def updatePlayers():
     for player in currentPlayers:
         worldRooms[currentPlayers[player]['Location']][OTHERPLAYERS].append(player)
 
-    playerStats['Health'] = currentPlayers[player]['Health']
+    playerStats['Health'] = currentPlayers[USERNAME]['Health']
+    if playerStats['Health'] < 1:
+        print('%sYou have been killed!%s' % (RED, WHITE))
+        status = '\n%sYou are dead!%s' % (RED, WHITE)
+        #os._exit(0)        
+
+    
 
 def removePlayer():
-    worldRooms[playerStats['Location']][OTHERPLAYERS].remove(playerStats['Player Name'])
+    global location
+    worldRooms[location][OTHERPLAYERS].remove(playerStats['Player Name'])
     del currentPlayers[playerStats['Player Name']]
 
     file_players = '%s%s.dat' % (SAVES_FOLDER, 'players')
@@ -1110,7 +1127,7 @@ def displayLocation(loc):
     players = worldRooms[loc][OTHERPLAYERS]
 
     for player in players:
-        if not player == playerStats['Player Name']:
+        if not player == USERNAME:
             if currentPlayers[player]['Health'] > 0:
                 print('%s%s%s is nearby.' % (YELLOW, player, WHITE))
             else:
@@ -1185,14 +1202,15 @@ def getAllItemsMatchingDesc(desc, itemList):
     return matchingItems
 
 def updatePrompt():
+    global status
     health = playerStats['Health']
     
     if health > 10:
         healthColour = GREEN
     else:
         healthColour = RED
-            
-    TextAdventureCmd.prompt = '\n%s[Health:%s%d%s][Money:%s%d%s]\n> %s' % (YELLOW, healthColour, playerStats['Health'], YELLOW, GREEN, playerStats['Money'], YELLOW, WHITE)
+                    
+    TextAdventureCmd.prompt = '%s\n%s[Health:%s%d%s][Money:%s%d%s]\n> %s' % (status, YELLOW, healthColour, playerStats['Health'], YELLOW, GREEN, playerStats['Money'], YELLOW, WHITE)
 
 def checkNPCs():
         npcs_alive = 0
@@ -1454,11 +1472,12 @@ class ThreadingExample(object):
                 else:
                     gameMinutes = 0
                     gameHours += 1
-            
+                    
+            updatePlayers()
             updatePrompt()
             
 
-class TextAdventureCmd(cmd.Cmd):
+class TextAdventureCmd(cmd.Cmd):        
     prompt = '\n%s[Health:%s%d%s][Money:%s%d%s]\n> %s' % (YELLOW, GREEN, playerStats['Health'], YELLOW, GREEN, playerStats['Money'], YELLOW, WHITE)
     #updatePrompt()
     
@@ -1567,6 +1586,7 @@ where read is to read a noticeboard and sign is to sign a noticeboard"""
         #print('%s\n%s\n%s' % (playerStats, worldRooms, NPCs))
         location = playerStats['Location']
 
+        updatePlayers()
         updatePrompt()
         print('Loaded all data')
 
@@ -1709,8 +1729,8 @@ where read is to read a noticeboard and sign is to sign a noticeboard"""
                 print('You have nothing to hit %s with.' % (who))
 
         if who_hitting == 'player':
-            print('Can\'t hit players in this version')
-            return
+            #print('Can\'t hit players in this version')
+            #return
 
             for item in inventory:
                 if item == 'Sword' or item == 'Great Sword':
@@ -1729,6 +1749,13 @@ where read is to read a noticeboard and sign is to sign a noticeboard"""
             else:
                 canFight = False
 
+            been_hit = False
+            playerHit_file = '%s%s_damage.sem' % (SAVES_FOLDER, who)
+            if os.path.exists(playerHit_file):
+                been_hit = True
+                print('%s has not updated their screen yet' % (who))
+                return
+                
             if canFight == True:
                 if who in worldRooms[location][OTHERPLAYERS]:
                     if currentPlayers[who]['Health'] > 0:
@@ -1740,6 +1767,9 @@ where read is to read a noticeboard and sign is to sign a noticeboard"""
                             currentPlayers[who]['XP'] = 0
                             currentPlayers[who]['HP'] = 0
                         currentPlayers[who]['Health'] -= dam 
+                        file_players = '%s%s.dat' % (SAVES_FOLDER, 'players')
+                        pickle.dump(currentPlayers[who]['Health'], open(playerHit_file, 'wb'))
+                        pickle.dump(currentPlayers, open(file_players, 'wb'))
                         if currentPlayers[who]['Health'] > 0:
                             print('You hit %s with a %s (MAX damage: %s), causing %d damage.\n%s now has %d health.' % (who, bestWeapon, bestWeaponDamage, dam, who, currentPlayers[who]['Health']))
                         else:
@@ -1813,6 +1843,7 @@ where read is to read a noticeboard and sign is to sign a noticeboard"""
     do_w = do_west
     do_u = do_up
     do_d = do_down
+    do_q = do_quit
 
     def do_exits(self, arg):
         """Toggle showing full exit descriptions or brief exit descriptions."""
@@ -1825,6 +1856,9 @@ where read is to read a noticeboard and sign is to sign a noticeboard"""
 
     def do_inventory(self, arg):
         """Display a list of the items in your possession."""
+        updatePlayers()
+        #print(currentPlayers[USERNAME]['Inventory'])
+        #print(inventory)
 
         if len(inventory) == 0:
             print('Inventory:\n  (nothing)')
@@ -1872,6 +1906,7 @@ where read is to read a noticeboard and sign is to sign a noticeboard"""
                 if lootMoney > 0:
                     NPCs[item]['Money'] -= lootMoney
                     playerStats['Money'] += lootMoney
+                    updatePlayers()
                     updatePrompt()
                     print('Looted %d coins from %s' % (lootMoney, item))
                 else:
@@ -1887,8 +1922,38 @@ where read is to read a noticeboard and sign is to sign a noticeboard"""
                 print('Nothing else in %s\'s inventory is worth looting.' % (arg))
             else:
                 print('Cannot loot as %s is not dead!' % (item))
+        if item in worldRooms[location][OTHERPLAYERS]:
+            lootMoney = currentPlayers[item]['Money']
+            lootInv = len(currentPlayers[item]['Inventory'])
+            healthPlayer = currentPlayers[item]['Health']
+            
+            if healthPlayer < 1:
+                # steal player's money
+                if lootMoney > 0:
+                    currentPlayers[item]['Money'] -= lootMoney
+                    playerStats['Money'] += lootMoney
+                    updatePlayers()
+                    updatePrompt()
+                    print('Looted %d coins from %s' % (lootMoney, item))
+                else:
+                    print('No money to loot from %s' % (item))
+                    
+                # steal all items in player's inventory
+                if lootInv > 0:
+                    for invItem in currentPlayers[item]['Inventory']:
+                        inventory.append(invItem)
+                        currentPlayers[item]['Inventory'].remove(invItem)
+                        print('Looted %s from %s' % (invItem, item))
+                    else:
+                        currentPlayers[item]['Inventory'] = []
+                print('Nothing else in %s\'s inventory is worth looting.' % (arg))
+            else:
+                print('Cannot loot as %s is not dead!' % (item))
         else:
             print('%s is not nearby.' % (item))
+            
+        file_players = '%s%s.dat' % (SAVES_FOLDER, 'players')
+        pickle.dump(currentPlayers, open(file_players, 'wb'))
 
     def do_take(self, arg):
         """"take <item> - Take an item on the ground."""
@@ -1911,6 +1976,7 @@ where read is to read a noticeboard and sign is to sign a noticeboard"""
             worldRooms[location][GROUND].remove(item) # remove from the ground
             if worldItems[item][TYPE] == 'playerStats':
                 playerStats[item] += 1
+                updatePlayers()
                 updatePrompt()
             else:
                 inventory.append(item) # add to inventory
@@ -2048,6 +2114,12 @@ where read is to read a noticeboard and sign is to sign a noticeboard"""
         if item in worldRooms[location][NPC]:
             print(NPCs[item])
             return
+            
+        # see if the item being looked at is a player
+        item = arg
+        if item in worldRooms[location][OTHERPLAYERS]:
+            print(currentPlayers[item])
+            return
 
         print('You do not see that nearby.')
 
@@ -2144,6 +2216,7 @@ where read is to read a noticeboard and sign is to sign a noticeboard"""
             if moneyAvailable >= costs:
                 playerStats['Money'] -= costs
                 inventory.append(item)
+                updatePlayers()
                 updatePrompt()
                 print('You have purchased %s' % (worldItems[item][SHORTDESC]))
                 print('You now have %d coins left' % (playerStats['Money']))
@@ -2199,6 +2272,7 @@ where read is to read a noticeboard and sign is to sign a noticeboard"""
                 """for sellfor in range(sells):
                     inventory.append('Money')"""
                 playerStats['Money'] += sells
+                updatePlayers()
                 updatePrompt()
 
                 print('You have sold %s for %d coins' % (worldItems[item][SHORTDESC], sells))
@@ -2276,6 +2350,7 @@ where read is to read a noticeboard and sign is to sign a noticeboard"""
             print('You eat %s' % (worldItems[item][SHORTDESC]))
             playerStats['Health'] += worldItems[item][GAIN]
             inventory.remove(item)
+            updatePlayers()
             updatePrompt()
             return
 
@@ -2310,7 +2385,6 @@ if __name__ == '__main__':
     print('===============')
     print()
     print('Welcome %s from IP %s on node %s' % (USERNAME, USERIPAD, NODENUMB))
-#    print('Your security level is %s' % (USERSECL))
     print('(Type "help" for commands.)')
     print()
     placeRandoms()
@@ -2318,7 +2392,7 @@ if __name__ == '__main__':
     displayLocation(location)
     example = ThreadingExample()
     TextAdventureCmd().cmdloop()
-    print('Thanks for playing!')
+    print('Thanks for playing!%s' % (WHITE))
 
     # Deinitialize 'colorama'
     colorama.deinit()
